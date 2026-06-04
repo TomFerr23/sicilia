@@ -22,17 +22,24 @@ html {
 body {
   color: var(--ink);
   background-color: var(--cream);
-  /* Layered radial gradients: warm top-left, cool top-right, over cream. */
+  /* Layered radial gradients: warm top-left, cool top-right, faint terra
+     glow bottom — all over cream. Kept low-opacity so text stays high
+     contrast and the paper cards read as the foreground. */
   background-image:
     radial-gradient(
-      120% 80% at 0% 0%,
+      110% 70% at 0% 0%,
       rgba(252, 239, 208, 0.95) 0%,
-      rgba(252, 239, 208, 0) 55%
+      rgba(252, 239, 208, 0) 52%
     ),
     radial-gradient(
-      120% 80% at 100% 0%,
+      110% 70% at 100% 0%,
       rgba(220, 234, 244, 0.9) 0%,
-      rgba(220, 234, 244, 0) 55%
+      rgba(220, 234, 244, 0) 52%
+    ),
+    radial-gradient(
+      140% 60% at 50% 100%,
+      rgba(197, 85, 46, 0.07) 0%,
+      rgba(197, 85, 46, 0) 60%
     );
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -72,6 +79,80 @@ body {
 .tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
+}
+
+/* Day anchors clear the sticky day-nav when jumped to. */
+.day-anchor {
+  scroll-margin-top: 84px;
+}
+
+/* Horizontal day-nav: hide the scrollbar but keep it swipeable. */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---- Leaflet: restyle to match the editorial theme ---- */
+.leaflet-container {
+  font-family: var(--font-spline), system-ui, sans-serif;
+  background: #ede7d6;
+}
+.leaflet-control-zoom a {
+  color: var(--ink) !important;
+  background: var(--paper) !important;
+  border-color: var(--line) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: var(--cream) !important;
+}
+.leaflet-bar {
+  border-color: var(--line) !important;
+  box-shadow: 0 2px 8px -3px rgba(43, 34, 24, 0.35) !important;
+}
+.leaflet-control-attribution {
+  background: rgba(255, 253, 246, 0.78) !important;
+  color: var(--sub) !important;
+  font-size: 9.5px !important;
+}
+.leaflet-control-attribution a {
+  color: var(--sea) !important;
+}
+
+/* Route pins: a colored dot with a white ring. Color comes from --pin. */
+.sicilia-pin span {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--pin, var(--sea));
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(43, 34, 24, 0.45);
+}
+
+/* Pin tooltip: small paper chip. */
+.sicilia-tip.leaflet-tooltip {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px -8px rgba(43, 34, 24, 0.4);
+  padding: 4px 8px;
+  color: var(--ink);
+  font-size: 11.5px;
+  line-height: 1.25;
+}
+.sicilia-tip.leaflet-tooltip strong {
+  display: block;
+  font-weight: 600;
+}
+.sicilia-tip.leaflet-tooltip span {
+  color: var(--sub);
+  font-size: 10.5px;
+}
+.sicilia-tip.leaflet-tooltip::before {
+  border-top-color: var(--line);
 }
 
 @media (prefers-reduced-motion: reduce) {

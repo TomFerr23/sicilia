@@ -433,3 +433,105 @@ export const FOOTER_TIPS = [
   "beaches & canyon before 11:00, towns after 17:00",
   "avoid town-centre ZTL zones (camera fines) — park outside & walk in",
 ];
+
+/**
+ * Approximate [lat, lng] for every stop, keyed by its title. Used by the
+ * route map to plot pins and draw the day-by-day driving thread. Repeated
+ * bases (Ortìgia) and "drive to X" stops resolve to the same point as the
+ * place itself.
+ */
+export const COORDS: Record<string, [number, number]> = {
+  "Catania Airport (CTA)": [37.4668, 15.0664],
+  "Fly out of Catania (CTA)": [37.4668, 15.0664],
+  "Catania centro": [37.5025, 15.0873],
+  "Drive to Catania": [37.5025, 15.0873],
+  "Mt Etna — Rifugio Sapienza": [37.6997, 14.999],
+  "Taormina + Isola Bella": [37.8517, 15.2853],
+  "Drive north": [37.8526, 15.2876],
+  "Ortìgia (Siracusa)": [37.059, 15.293],
+  "Back to Ortìgia": [37.059, 15.293],
+  "Cavagrande del Cassibile": [37.0316, 15.084],
+  Noto: [36.8907, 15.0696],
+  "Calamosche, Vendicari Reserve": [36.807, 15.106],
+  Marzamemi: [36.738, 15.1185],
+  "Ragusa Ibla": [36.9258, 14.746],
+  Modica: [36.8585, 14.7615],
+  Scicli: [36.7906, 14.703],
+  "Punta Secca": [36.788, 14.487],
+  "Villa San Giovanni — embark": [38.2206, 15.636],
+  "Port of Messina": [38.1936, 15.566],
+  "Messina → Villa San Giovanni": [38.1936, 15.566],
+};
+
+/** Short, map-friendly labels for pins (the full title can be long). */
+export const SHORT_LABEL: Record<string, string> = {
+  "Catania Airport (CTA)": "Catania airport",
+  "Fly out of Catania (CTA)": "Catania airport",
+  "Catania centro": "Catania",
+  "Drive to Catania": "Catania",
+  "Mt Etna — Rifugio Sapienza": "Mt Etna",
+  "Taormina + Isola Bella": "Taormina",
+  "Drive north": "Taormina",
+  "Ortìgia (Siracusa)": "Ortìgia",
+  "Back to Ortìgia": "Ortìgia",
+  "Cavagrande del Cassibile": "Cavagrande",
+  Noto: "Noto",
+  "Calamosche, Vendicari Reserve": "Vendicari",
+  Marzamemi: "Marzamemi",
+  "Ragusa Ibla": "Ragusa Ibla",
+  Modica: "Modica",
+  Scicli: "Scicli",
+  "Punta Secca": "Punta Secca",
+  "Villa San Giovanni — embark": "Villa S. Giovanni",
+  "Port of Messina": "Messina",
+  "Messina → Villa San Giovanni": "Messina",
+};
+
+export interface RoutePoint {
+  title: string;
+  label: string;
+  type: StopType;
+  coord: [number, number];
+  days: number[]; // day numbers that touch this place
+}
+
+/**
+ * Ordered list of plotted points for a plan's full journey, with immediate
+ * consecutive duplicates collapsed (e.g. day-trips that return to Ortìgia
+ * keep the thread but don't stack a pin on itself). `seq` is the polyline
+ * path; `points` are the de-duplicated pins.
+ */
+export function routeForPlan(plan: Plan): {
+  seq: [number, number][];
+  points: RoutePoint[];
+} {
+  const seq: [number, number][] = [];
+  const byKey = new Map<string, RoutePoint>();
+  let prevKey = "";
+
+  for (const day of plan.days) {
+    for (const stop of day.stops) {
+      const coord = COORDS[stop.title];
+      if (!coord) continue;
+      const key = `${coord[0]},${coord[1]}`;
+      if (key !== prevKey) {
+        seq.push(coord);
+        prevKey = key;
+      }
+      const existing = byKey.get(key);
+      if (existing) {
+        if (!existing.days.includes(day.n)) existing.days.push(day.n);
+      } else {
+        byKey.set(key, {
+          title: stop.title,
+          label: SHORT_LABEL[stop.title] ?? stop.title,
+          type: stop.type,
+          coord,
+          days: [day.n],
+        });
+      }
+    }
+  }
+
+  return { seq, points: [...byKey.values()] };
+}

@@ -29,15 +29,14 @@ export default function Stop({ stop, first, last }: StopProps) {
 
       {/* Via segment: how you travel TO this stop. Not shown on first stop. */}
       {!first && stop.via && (
-        <div className="mb-3 flex items-center gap-2 pl-1 text-[12px] text-sub">
+        <div className="mb-3 flex items-center gap-2">
           <span
-            aria-hidden="true"
-            className="ml-[-4px] flex h-5 w-5 items-center justify-center"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line bg-cream px-2.5 py-[3px] text-[11.5px] font-medium text-sub"
           >
-            <Car size={13} strokeWidth={2} />
-          </span>
-          <span className="tabular">
-            {stop.via.dur} · {stop.via.dist}
+            <Car size={12} strokeWidth={2.2} aria-hidden="true" />
+            <span className="tabular">
+              {stop.via.dur} · {stop.via.dist}
+            </span>
           </span>
           <span
             aria-hidden="true"

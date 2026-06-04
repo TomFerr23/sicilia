@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, Plane, Sun, BedDouble, TriangleAlert } from "lucide-react";
-import { type Day, FERRAGOSTO_TEXT } from "@/lib/itinerary";
+import { type Day, FERRAGOSTO_TEXT, SHORT_LABEL } from "@/lib/itinerary";
 import { COLORS } from "@/lib/theme";
 import Stop from "./Stop";
 
@@ -17,10 +17,19 @@ export default function DayCard({ day, accent, index }: DayCardProps) {
   const badgeBg = day.depart ? COLORS.olive : accent;
   const panelId = `day-${day.n}-panel`;
 
+  // One-line summary of where the day goes — shown when collapsed.
+  const breadcrumb = day.stops
+    .map((s) => SHORT_LABEL[s.title] ?? s.title)
+    .join(" → ");
+
   return (
     <article
-      className="day-card rise-in overflow-hidden rounded-2xl border border-line bg-paper shadow-card"
-      style={{ animationDelay: `${index * 70}ms` }}
+      className="day-card rise-in overflow-hidden rounded-2xl border shadow-card"
+      style={{
+        animationDelay: `${index * 70}ms`,
+        backgroundColor: day.depart ? "#F4F4EA" : COLORS.paper,
+        borderColor: day.depart ? "#D8DCC2" : COLORS.line,
+      }}
     >
       <button
         type="button"
@@ -40,7 +49,7 @@ export default function DayCard({ day, accent, index }: DayCardProps) {
 
         <div className="min-w-0 flex-1">
           <div
-            className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-wide"
+            className="flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-wide"
             style={{ color: day.ferragosto ? COLORS.terra : COLORS.sub }}
           >
             {day.ferragosto && <Sun size={13} strokeWidth={2.4} />}
@@ -48,13 +57,19 @@ export default function DayCard({ day, accent, index }: DayCardProps) {
               Day {day.n} · {day.date}
             </span>
           </div>
-          <h3 className="truncate font-display text-[19px] font-semibold leading-tight text-ink">
+          <h3 className="pr-1 font-display text-[19px] font-semibold leading-tight text-ink">
             {day.title}
           </h3>
-          <div className="mt-0.5 flex items-center gap-1.5 text-[12.5px] text-sub">
-            <BedDouble size={13} strokeWidth={2} aria-hidden="true" />
-            <span>sleep: {day.sleep}</span>
-          </div>
+          {open ? (
+            <div className="mt-0.5 flex items-center gap-1.5 text-[12.5px] text-sub">
+              <BedDouble size={13} strokeWidth={2} aria-hidden="true" />
+              <span>
+                sleep: <span className="text-ink/80">{day.sleep}</span>
+              </span>
+            </div>
+          ) : (
+            <p className="mt-0.5 truncate text-[12.5px] text-sub">{breadcrumb}</p>
+          )}
         </div>
 
         <ChevronDown
