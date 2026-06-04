@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #fbf5e6;
+  --paper: #fffdf6;
+  --ink: #2b2218;
+  --sub: #7a6a52;
+  --sea: #1e4e8c;
+  --seaDeep: #16365f;
+  --terra: #c5552e;
+  --gold: #c79a3a;
+  --olive: #6e7a4a;
+  --line: #e4d8be;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  color: var(--ink);
+  background-color: var(--cream);
+  /* Layered radial gradients: warm top-left, cool top-right, over cream. */
+  background-image:
+    radial-gradient(
+      120% 80% at 0% 0%,
+      rgba(252, 239, 208, 0.95) 0%,
+      rgba(252, 239, 208, 0) 55%
+    ),
+    radial-gradient(
+      120% 80% at 100% 0%,
+      rgba(220, 234, 244, 0.9) 0%,
+      rgba(220, 234, 244, 0) 55%
+    );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+/* Big SICILIA wordmark — gradient text via background-clip. */
+.wordmark {
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  font-size: clamp(54px, 15vw, 104px);
+  background: linear-gradient(100deg, var(--seaDeep) 0%, var(--sea) 45%, var(--terra) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Page-load stagger: day cards fade + rise in. */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise-in {
+  opacity: 0;
+  animation: riseIn 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise-in {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Print: clean single-column export of the visible plan. */
+@media print {
+  body {
+    background: #fff;
+    background-image: none;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .day-card {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border-color: #ccc !important;
+  }
+  .rise-in {
+    animation: none;
+    opacity: 1;
+  }
+}
