@@ -121,15 +121,38 @@ body {
   color: var(--sea) !important;
 }
 
-/* Route pins: a colored dot with a white ring. Color comes from --pin. */
+/* Route pins: a colored disc numbered in visit order. Color comes from --pin. */
 .sicilia-pin span {
-  display: block;
-  width: 16px;
-  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
   border-radius: 9999px;
   background: var(--pin, var(--sea));
   border: 2px solid #fff;
-  box-shadow: 0 1px 4px rgba(43, 34, 24, 0.45);
+  box-shadow: 0 1px 5px rgba(43, 34, 24, 0.5);
+  color: #fff;
+  font-family: var(--font-spline), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+/* First stop gets a green ring (start), last a darker ring (end). */
+.sicilia-pin span.is-start {
+  box-shadow: 0 0 0 2px var(--olive), 0 1px 5px rgba(43, 34, 24, 0.5);
+}
+.sicilia-pin span.is-end {
+  box-shadow: 0 0 0 2px var(--ink), 0 1px 5px rgba(43, 34, 24, 0.5);
+}
+
+/* Direction-of-travel arrowheads sitting on the route line. */
+.sicilia-arrow {
+  pointer-events: none;
+}
+.sicilia-arrow svg {
+  display: block;
+  transform-origin: 50% 50%;
 }
 
 /* Pin tooltip: small paper chip. */

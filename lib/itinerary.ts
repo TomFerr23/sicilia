@@ -447,7 +447,7 @@ export const COORDS: Record<string, [number, number]> = {
   "Drive to Catania": [37.5025, 15.0873],
   "Mt Etna — Rifugio Sapienza": [37.6997, 14.999],
   "Taormina + Isola Bella": [37.8517, 15.2853],
-  "Drive north": [37.8526, 15.2876],
+  "Drive north": [37.8517, 15.2853],
   "Ortìgia (Siracusa)": [37.059, 15.293],
   "Back to Ortìgia": [37.059, 15.293],
   "Cavagrande del Cassibile": [37.0316, 15.084],
